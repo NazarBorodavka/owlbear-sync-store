@@ -1,0 +1,54 @@
+name: Update app from new image build
+
+# Fired cross-repo by owlbear-sync's own docker-publish.yml workflow after it
+# pushes a new master image — see the "Notify app store" step there. Pushing
+# to main here triggers release-store.yml, which rebuilds and redeploys the
+# store, so a new build shows up as an "Update available" prompt in
+# ZimaOS/CasaOS without anyone touching this repo by hand.
+on:
+  repository_dispatch:
+    types: [new-image]
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Update docker-compose.yml with new build
+        env:
+          NEW_TAG: ${{ github.event.client_payload.tag }}
+          NEW_VERSION: ${{ github.event.client_payload.version }}
+          NEW_DATE: ${{ github.event.client_payload.date }}
+        run: |
+          set -euo pipefail
+          FILE="Apps/OwlbearTracker/docker-compose.yml"
+          if [ -z "${NEW_TAG:-}" ]; then
+            echo "Missing client_payload.tag in dispatch event" >&2
+            exit 1
+          fi
+
+          sed -i "s|image: ghcr.io/nazarborodavka/owlbear-tracker:.*|image: ghcr.io/nazarborodavka/owlbear-tracker:${NEW_TAG}|" "$FILE"
+          sed -i "s|^  version: \".*\"|  version: \"${NEW_VERSION}\"|" "$FILE"
+          sed -i "s|^  update_at: \".*\"|  update_at: \"${NEW_DATE}\"|" "$FILE"
+
+          echo "Updated $FILE:"
+          grep -E "image:|version:|update_at:" "$FILE"
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Apps/OwlbearTracker/docker-compose.yml
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "chore: bump owlbear-tracker to ${{ github.event.client_payload.tag }}"
+          git push origin main

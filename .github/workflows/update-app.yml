@@ -1,13 +1,24 @@
 name: Update app from new image build
 
 # Fired cross-repo by owlbear-sync's own docker-publish.yml workflow after it
-# pushes a new master image — see the "Notify app store" step there. Pushing
-# to main here triggers release-store.yml, which rebuilds and redeploys the
-# store, so a new build shows up as an "Update available" prompt in
-# ZimaOS/CasaOS without anyone touching this repo by hand.
+# pushes a new master image — see the "Notify app store" step there.
+#
+# This job builds and deploys the store bundle itself, rather than just
+# committing the bump and relying on release-store.yml's `on: push` trigger
+# to pick it up: a commit pushed using the workflow's own GITHUB_TOKEN does
+# NOT trigger other workflows (GitHub's deliberate anti-recursion
+# safeguard), so that hand-off silently never happened — the source file on
+# `main` was correctly updated every time, but the published gh-pages site
+# ZimaOS/CasaOS actually reads was frozen at the very first build.
+# release-store.yml still exists to cover a real, manually-pushed edit to
+# this repo (a human push isn't subject to that restriction).
 on:
   repository_dispatch:
     types: [new-image]
+
+concurrency:
+  group: gh-pages-deploy
+  cancel-in-progress: true
 
 permissions:
   contents: write
@@ -48,7 +59,22 @@ jobs:
           git add Apps/OwlbearTracker/docker-compose.yml
           if git diff --cached --quiet; then
             echo "No changes to commit"
-            exit 0
+          else
+            git commit -m "chore: bump owlbear-tracker to ${{ github.event.client_payload.tag }}"
+            git push origin main
           fi
-          git commit -m "chore: bump owlbear-tracker to ${{ github.event.client_payload.tag }}"
-          git push origin main
+
+      - name: Build app store bundle
+        uses: IceWhaleTech/build-appstore-action@v1.1.2
+        with:
+          source: .
+          output: dist
+          base-url: https://nazarborodavka.github.io/owlbear-sync-store/
+
+      - name: Deploy to GitHub Pages (gh-pages branch)
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          publish_branch: gh-pages
+          force_orphan: true

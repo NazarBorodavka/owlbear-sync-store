@@ -20,7 +20,11 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build app store bundle
-        uses: IceWhaleTech/build-appstore-action@main
+        # Pinned to a release tag rather than @main: this job has
+        # contents:write on this repo, so an unpinned floating branch ref
+        # would let a future upstream change run with that permission here
+        # without any review on our side. Bump deliberately when needed.
+        uses: IceWhaleTech/build-appstore-action@v1.1.2
         with:
           source: .
           output: dist

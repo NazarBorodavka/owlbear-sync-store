@@ -1,0 +1,23 @@
+{
+  "tagline": "Physical token tracking + fog of war for Owlbear Rodeo",
+  "description": "Tracks physical miniatures on a tabletop via camera and CCTag fiducial markers, syncing their positions live into an Owlbear Rodeo scene and driving projector fog-of-war blackout.\n",
+  "author": "NazarBorodavka",
+  "developer": "NazarBorodavka",
+  "category": "Others",
+  "architectures": [
+    "amd64"
+  ],
+  "update_at": "2026-09-15",
+  "title": "Owlbear Token Tracker",
+  "release_note": "Initial app store release.",
+  "base_url": "https://nazarborodavka.github.io/owlbear-sync-store",
+  "id": "com.nazarborodavka.owlbearsync",
+  "version": "1.09",
+  "categories": [
+    "others"
+  ],
+  "min_memory": 0,
+  "min_image_size": {
+    "amd64": 732497880
+  }
+}

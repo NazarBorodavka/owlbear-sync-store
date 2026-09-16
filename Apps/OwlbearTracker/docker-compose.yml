@@ -8,7 +8,7 @@ services:
     # "update available" by comparing this exact string against what's
     # installed, and a floating tag never changes, so it would silently stop
     # prompting for updates.
-    image: ghcr.io/nazarborodavka/owlbear-tracker:master-109
+    image: ghcr.io/nazarborodavka/owlbear-tracker:master-110
     container_name: owlbear-tracker
     ports:
       - target: 5000
@@ -49,7 +49,7 @@ x-casaos:
   category: Others
   architectures:
     - amd64
-  version: "1.09"
-  update_at: "2026-09-15"
+  version: "1.10"
+  update_at: "2026-09-16"
   release_notes:
     en_US: Initial app store release.

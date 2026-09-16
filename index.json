@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "updated_at": "2026-09-16T16:06:33Z",
+  "app_count": 1,
+  "base_url": "https://nazarborodavka.github.io/owlbear-sync-store",
+  "apps": [
+    {
+      "id": "com.nazarborodavka.owlbearsync",
+      "title": "Owlbear Token Tracker",
+      "tagline": "Physical token tracking + fog of war for Owlbear Rodeo",
+      "category": "Others",
+      "categories": [
+        "others"
+      ],
+      "author": "NazarBorodavka",
+      "developer": "NazarBorodavka",
+      "architectures": [
+        "amd64"
+      ],
+      "icon": "/apps/com.nazarborodavka.owlbearsync/assets/icon.svg",
+      "thumbnail": "",
+      "compose_url": "/apps/com.nazarborodavka.owlbearsync/docker-compose.yml",
+      "meta_url": "/apps/com.nazarborodavka.owlbearsync/meta.json",
+      "content_hash": "c885ef16"
+    }
+  ]
+}

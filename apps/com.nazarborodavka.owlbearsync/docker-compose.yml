@@ -1,0 +1,40 @@
+name: owlbear-tracker
+
+services:
+  tracker:
+    # This tag is rewritten automatically by .github/workflows/update-app.yml
+    # whenever the main owlbear-sync repo publishes a new master build — do
+    # not hand-edit it back to `latest`/`master`. ZimaOS/CasaOS only detect
+    # "update available" by comparing this exact string against what's
+    # installed, and a floating tag never changes, so it would silently stop
+    # prompting for updates.
+    image: ghcr.io/nazarborodavka/owlbear-tracker:master-113
+    container_name: owlbear-tracker
+    ports:
+      - target: 5000
+        published: "5000"
+        protocol: tcp
+    volumes:
+      # Directory bind, not a single-file bind: CasaOS/ZimaOS manage AppData
+      # under /DATA/AppData/<app>, and Docker will silently create a missing
+      # bind source as a directory if it's a single file that doesn't exist
+      # yet on first run — mounting the parent directory and pointing the
+      # app at a file inside it avoids that foot-gun.
+      - type: bind
+        source: /DATA/AppData/owlbear-tracker
+        target: /app_data
+    environment:
+      - PYTHONUNBUFFERED=1
+      - TRACKER_CONFIG_FILE=/app_data/config.json
+    restart: unless-stopped
+
+x-casaos:
+  id: com.nazarborodavka.owlbearsync
+  main: tracker
+  index: /
+  port_map: "5000"
+  scheme: http
+  icon: https://nazarborodavka.github.io/owlbear-sync-store/apps/com.nazarborodavka.owlbearsync/assets/icon.svg
+  title:
+    en_US: Owlbear Token Tracker
+  version: "1.13"

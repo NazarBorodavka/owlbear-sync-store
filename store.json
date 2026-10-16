@@ -1,0 +1,8 @@
+{
+  "version": 2,
+  "store_id": "com.nazarborodavka.owlbearsync",
+  "name": "Nazar's App Store",
+  "description": "Personal app store for self-built apps, starting with the Owlbear Rodeo physical token tracker.",
+  "maintainer": "NazarBorodavka",
+  "url": "https://github.com/NazarBorodavka/owlbear-sync-store"
+}

@@ -7,7 +7,15 @@ on:
 
 concurrency:
   group: gh-pages-deploy
-  cancel-in-progress: true
+  # Queue, do not cancel. Each run checks out, bumps its own app's pinned
+  # tag, commits, then rebuilds the WHOLE store bundle from its checkout.
+  # With cancel-in-progress, a v1 and a v2 publish landing together meant
+  # one run was killed mid-deploy while its commit stayed on main -- so
+  # gh-pages (the thing ZimaOS actually reads) would be built from a
+  # checkout predating that commit, and the bump would silently never
+  # reach the store. Queueing makes the second run check out the first
+  # run's commit, which is the behaviour this needs.
+  cancel-in-progress: false
 
 permissions:
   contents: write

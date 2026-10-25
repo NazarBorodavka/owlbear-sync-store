@@ -8,7 +8,7 @@ services:
     # "update available" by comparing this exact string against what's
     # installed, and a floating tag never changes, so it would silently stop
     # prompting for updates.
-    image: ghcr.io/nazarborodavka/owlbear-tracker-v2:master-2
+    image: ghcr.io/nazarborodavka/owlbear-tracker-v2:master-3
     container_name: owlbear-tracker-v2
     # 5001 so this can run alongside a v1 install on 5000 during migration.
     ports:
@@ -81,8 +81,8 @@ x-casaos:
   category: Others
   architectures:
     - amd64
-  version: "0.02"
-  update_at: "2026-10-23"
+  version: "0.03"
+  update_at: "2026-10-25"
   release_notes:
     en_US: First v2 release.
   tips:

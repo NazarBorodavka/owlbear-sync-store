@@ -1,0 +1,2 @@
+ghcr.io/nazarborodavka/owlbear-tracker-v2:master-3 sha256:2654dfed693afcb6468e85563a45be18a76c09a20d1f149eb624563a44012cd9
+ghcr.io/nazarborodavka/owlbear-tracker:master-130 sha256:0135561ecbc0f21787f6a02eed72e21a326b09224a5050c3045bdfd47df231a0

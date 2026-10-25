@@ -1,0 +1,59 @@
+name: owlbear-tracker-v2
+
+services:
+  tracker:
+    # This tag is rewritten automatically by .github/workflows/update-app-v2.yml
+    # whenever owlbear-sync-v2 publishes a new master build -- do not
+    # hand-edit it back to `latest`/`master`. ZimaOS/CasaOS only detect
+    # "update available" by comparing this exact string against what's
+    # installed, and a floating tag never changes, so it would silently stop
+    # prompting for updates.
+    image: ghcr.io/nazarborodavka/owlbear-tracker-v2:master-3@sha256:2654dfed693afcb6468e85563a45be18a76c09a20d1f149eb624563a44012cd9
+    container_name: owlbear-tracker-v2
+    # 5001 so this can run alongside a v1 install on 5000 during migration.
+    ports:
+      - target: 5000
+        published: "5001"
+        protocol: tcp
+    volumes:
+      # Directory bind, not a single-file bind: CasaOS/ZimaOS manage AppData
+      # under /DATA/AppData/<app>, and Docker will silently create a missing
+      # bind source as a directory if it's a single file that doesn't exist
+      # yet on first run.
+      #
+      # Target is /data, matching TRACKER_DATA_DIR in the image. It must NOT
+      # be pointed anywhere inside /app: shipped files live there (notably
+      # tracker/vision/codebook_data.json, which the decoder needs and which
+      # the printed markers are generated from), and a bind mount would
+      # shadow them and break startup.
+      - type: bind
+        source: /DATA/AppData/owlbear-tracker-v2
+        target: /data
+    environment:
+      - PYTHONUNBUFFERED=1
+      # Dashboard login. CHANGE THE PASSWORD in the ZimaOS app settings
+      # after install -- this is a plain basic-auth login.
+      - TRACKER_USER=admin
+      - TRACKER_PASSWORD=admin
+      # Optional: pin the camera here instead of entering it in the
+      # dashboard. If set it wins over the UI and survives restarts.
+      # Leave unset to enter it once in the dashboard, where it is stored
+      # 0600 in the data volume instead of in this file.
+      # - TRACKER_CAMERA_URL=rtsp://user:pass@192.168.1.60:554/h264Preview_01_main
+      # Optional: set to 0 to stop the camera auto-starting at boot.
+      # - TRACKER_AUTOSTART=0
+    restart: unless-stopped
+
+x-casaos:
+  # Distinct id from v1's com.nazarborodavka.owlbearsync: these are
+  # separate apps that can be installed at the same time, and reusing the
+  # id would make the store treat v2 as an update to v1 and replace it.
+  id: com.nazarborodavka.owlbearsync.v2
+  main: tracker
+  index: /
+  port_map: "5001"
+  scheme: http
+  icon: https://nazarborodavka.github.io/owlbear-sync-store/apps/com.nazarborodavka.owlbearsync.v2/assets/icon.svg
+  title:
+    en_US: Owlbear Token Tracker v2
+  version: "0.03"

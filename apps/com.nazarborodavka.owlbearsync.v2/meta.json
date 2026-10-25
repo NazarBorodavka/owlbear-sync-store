@@ -1,0 +1,26 @@
+{
+  "tagline": "Camera token tracking for Owlbear Rodeo, rebuilt",
+  "description": "Tracks physical miniatures on a tabletop with an overhead camera and mirrors their positions live into an Owlbear Rodeo scene.\nA from-scratch rewrite of Owlbear Token Tracker, not an update to it -- the two can be installed side by side. Markers, detector, decoder, tracker, calibration and UI are all new, so markers printed for v1 do NOT work with v2 and must be reprinted from this version.\nTokens carry a ring code around the edge of a 40mm base, leaving the middle clear for artwork. Identity and rotation are read together by matched filtering, so there is no orientation mark to be occluded, and anything that is not confidently a known marker is reported as no-id rather than guessed. Calibration is split into independently rerunnable steps (lens, play area, detector thresholds, projected grid), all persisted. Token names and the scene-token mapping survive across sessions.\n",
+  "author": "NazarBorodavka",
+  "developer": "NazarBorodavka",
+  "category": "Others",
+  "architectures": [
+    "amd64"
+  ],
+  "update_at": "2026-10-25",
+  "tips": {
+    "before_install": "Needs an RTSP camera mounted above the table and markers printed from this version (v1 markers will not decode). After install, open the dashboard, change the password, enter the camera URL, then work through the calibration steps in order.\n"
+  },
+  "title": "Owlbear Token Tracker v2",
+  "release_note": "First v2 release.",
+  "base_url": "https://nazarborodavka.github.io/owlbear-sync-store",
+  "id": "com.nazarborodavka.owlbearsync.v2",
+  "version": "0.03",
+  "categories": [
+    "others"
+  ],
+  "min_memory": 0,
+  "min_image_size": {
+    "amd64": 306648925
+  }
+}
